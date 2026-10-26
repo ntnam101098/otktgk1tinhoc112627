@@ -1,0 +1,6 @@
+{
+  "name": "ÔN TẬP KTGK1 - MÔN TIN HỌC 11",
+  "description": "Ứng dụng ôn luyện bám sát 100% nội dung Đề cương kiểm tra giữa học kỳ 1 môn Tin học 11 với đầy đủ 3 phần: Trắc nghiệm 4 lựa chọn, Trắc nghiệm Đúng/Sai và Tự luận.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
