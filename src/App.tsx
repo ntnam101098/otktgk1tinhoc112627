@@ -5,7 +5,7 @@ import { QuizView } from './components/QuizView';
 import { ResultView } from './components/ResultView';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { AdminDashboard } from './components/AdminDashboard';
-import { checkAdminAuth, logoutAdmin, getSubmissions, saveSubmission } from './utils/storage';
+import { checkAdminAuth, logoutAdmin, getSubmissions, saveSubmission, fetchSubmissionsFromServer } from './utils/storage';
 import { calculateScores, GradingResult } from './utils/grading';
 import { StudentSubmission } from './types/quiz';
 
@@ -33,16 +33,24 @@ export default function App() {
   useEffect(() => {
     setIsAdmin(checkAdminAuth());
     setSubmissions(getSubmissions());
+
+    // Fetch persistent database from server
+    fetchSubmissionsFromServer().then((subs) => {
+      if (subs && subs.length > 0) {
+        setSubmissions(subs);
+      }
+    });
   }, []);
 
-  const handleRefreshSubmissions = () => {
-    setSubmissions(getSubmissions());
+  const handleRefreshSubmissions = async () => {
+    const updated = await fetchSubmissionsFromServer();
+    setSubmissions(updated);
   };
 
-  const handleAdminLoginSuccess = () => {
+  const handleAdminLoginSuccess = async () => {
     setIsAdmin(true);
     setShowAdminDashboard(true);
-    handleRefreshSubmissions();
+    await handleRefreshSubmissions();
   };
 
   const handleLogout = () => {
@@ -64,7 +72,7 @@ export default function App() {
   };
 
   // Submit exam
-  const handleSubmitQuiz = (data: {
+  const handleSubmitQuiz = async (data: {
     part1: Record<number, 'A' | 'B' | 'C' | 'D'>;
     part2: Record<number, Record<'a' | 'b' | 'c' | 'd', boolean | null>>;
     part3: Record<number, Record<'a' | 'b' | 'c' | 'd', string>>;
@@ -113,8 +121,8 @@ export default function App() {
       feedback: grading.feedback,
     };
 
-    saveSubmission(submission);
-    handleRefreshSubmissions();
+    await saveSubmission(submission);
+    await handleRefreshSubmissions();
 
     setCurrentSubmission(submission);
     setCurrentGrading(grading);

@@ -65,20 +65,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     weak: submissions.filter((s) => s.totalScore < 5.0).length,
   };
 
-  const handleDeleteOne = (id: string) => {
-    deleteSubmission(id);
+  const handleDeleteOne = async (id: string) => {
+    await deleteSubmission(id);
     setConfirmDeleteId(null);
     onRefresh();
   };
 
-  const handleClearAll = () => {
-    clearAllSubmissions();
+  const handleClearAll = async () => {
+    await clearAllSubmissions();
     setShowClearConfirm(false);
     onRefresh();
   };
 
-  const handleRestoreDemo = () => {
-    restoreDemoSubmissions();
+  const handleRestoreDemo = async () => {
+    await restoreDemoSubmissions();
     onRefresh();
   };
 

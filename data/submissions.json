@@ -1,0 +1,494 @@
+[
+  {
+    "id": "sub_demo_01",
+    "studentName": "Trần Minh Quân",
+    "className": "11 Tin",
+    "mode": "test",
+    "scope": "all",
+    "startedAt": "2026-10-25T22:05:08.437Z",
+    "submittedAt": "2026-10-25T22:40:08.437Z",
+    "timeSpentSeconds": 2100,
+    "part1Answers": {
+      "1": "A",
+      "2": "D",
+      "3": "A",
+      "4": "D",
+      "5": "B",
+      "6": "C",
+      "7": "D",
+      "8": "A",
+      "9": "C",
+      "10": "C",
+      "11": "C",
+      "12": "A",
+      "13": "A",
+      "14": "A",
+      "15": "B",
+      "16": "A",
+      "17": "A",
+      "18": "C",
+      "19": "A",
+      "20": "D",
+      "21": "C",
+      "22": "A",
+      "23": "D",
+      "24": "D",
+      "25": "B",
+      "26": "B",
+      "27": "C",
+      "28": "D",
+      "29": "B",
+      "30": "C"
+    },
+    "part2Answers": {
+      "1": {
+        "a": true,
+        "b": true,
+        "c": false,
+        "d": true
+      },
+      "2": {
+        "a": true,
+        "b": false,
+        "c": true,
+        "d": true
+      },
+      "3": {
+        "a": true,
+        "b": false,
+        "c": true,
+        "d": true
+      },
+      "4": {
+        "a": true,
+        "b": false,
+        "c": true,
+        "d": true
+      },
+      "5": {
+        "a": true,
+        "b": true,
+        "c": true,
+        "d": false
+      },
+      "6": {
+        "a": true,
+        "b": false,
+        "c": true,
+        "d": true
+      }
+    },
+    "part3Answers": {
+      "1": {
+        "a": "10011",
+        "b": "14",
+        "c": "5",
+        "d": "14 + 5 = 19"
+      },
+      "2": {
+        "a": "Quyền xem chỉ để đọc",
+        "b": "Nhận xét góp ý, sửa trực tiếp",
+        "c": "Cùng làm việc trên đám mây",
+        "d": "Nhận xét không tự sửa câu văn"
+      },
+      "3": {
+        "a": "học sinh giảm rác nhựa",
+        "b": "giảm rác nhựa nội trú",
+        "c": "bình nước cá nhân, mục Hình ảnh",
+        "d": "Bài cơ quan môi trường vì tin cậy"
+      },
+      "4": {
+        "a": "10000",
+        "b": "9",
+        "c": "7",
+        "d": "9 + 7 = 16"
+      },
+      "5": {
+        "a": "Cùng đường dẫn trực tuyến",
+        "b": "Chưa được phân quyền",
+        "c": "Vô tình xóa nhầm dữ liệu",
+        "d": "Quyền bị thu hồi"
+      },
+      "6": {
+        "a": "sắp xếp góc học tập nội trú",
+        "b": "sắp xếp sách vở bàn học",
+        "c": "bàn học gọn gàng, Hình ảnh",
+        "d": "Bài nhà trường uy tín"
+      }
+    },
+    "part3SelfScores": {
+      "1": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "2": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "3": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "4": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "5": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "6": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      }
+    },
+    "part1Score": 3,
+    "part2Score": 4,
+    "part3Score": 3,
+    "totalScore": 10,
+    "maxScore": 10,
+    "percentage": 100,
+    "rating": "Xuất sắc",
+    "feedback": "Nắm vững toàn diện kiến thức Bài 1 đến Bài 8. Lập luận chuẩn xác, tính toán nhị phân chính xác 100%!"
+  },
+  {
+    "id": "sub_demo_02",
+    "studentName": "Lê Hoàng Yến Nhi",
+    "className": "11A1",
+    "mode": "test",
+    "scope": "all",
+    "startedAt": "2026-10-26T04:05:08.437Z",
+    "submittedAt": "2026-10-26T04:45:08.437Z",
+    "timeSpentSeconds": 2400,
+    "part1Answers": {
+      "1": "A",
+      "2": "D",
+      "3": "A",
+      "4": "D",
+      "5": "B",
+      "6": "C",
+      "7": "D",
+      "8": "A",
+      "9": "C",
+      "10": "C",
+      "11": "C",
+      "12": "A",
+      "13": "A",
+      "14": "A",
+      "15": "B",
+      "16": "A",
+      "17": "A",
+      "18": "C",
+      "19": "A",
+      "20": "D",
+      "21": "C",
+      "22": "A",
+      "23": "C",
+      "24": "D",
+      "25": "B",
+      "26": "B",
+      "27": "C",
+      "28": "D",
+      "29": "B",
+      "30": "C"
+    },
+    "part2Answers": {
+      "1": {
+        "a": true,
+        "b": true,
+        "c": false,
+        "d": true
+      },
+      "2": {
+        "a": true,
+        "b": false,
+        "c": true,
+        "d": true
+      },
+      "3": {
+        "a": true,
+        "b": true,
+        "c": true,
+        "d": true
+      },
+      "4": {
+        "a": true,
+        "b": false,
+        "c": true,
+        "d": true
+      },
+      "5": {
+        "a": true,
+        "b": true,
+        "c": true,
+        "d": false
+      },
+      "6": {
+        "a": true,
+        "b": false,
+        "c": true,
+        "d": true
+      }
+    },
+    "part3Answers": {
+      "1": {
+        "a": "10011",
+        "b": "14",
+        "c": "5",
+        "d": "14 + 5 = 19"
+      },
+      "2": {
+        "a": "Chỉ xem",
+        "b": "Góp ý vs chỉnh sửa",
+        "c": "Google docs đồng bộ",
+        "d": "Chỉ là comment"
+      },
+      "3": {
+        "a": "giảm rác",
+        "b": "giảm rác nội trú",
+        "c": "bình nước",
+        "d": "môi trường"
+      },
+      "4": {
+        "a": "10000",
+        "b": "9",
+        "c": "7",
+        "d": "9 + 7 = 16"
+      },
+      "5": {
+        "a": "link trực tuyến",
+        "b": "chưa có quyền",
+        "c": "sửa nhầm",
+        "d": "bị hủy"
+      },
+      "6": {
+        "a": "góc học tập",
+        "b": "sách vở",
+        "c": "ảnh bàn học",
+        "d": "trường học"
+      }
+    },
+    "part3SelfScores": {
+      "1": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "2": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "3": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "4": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "5": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "6": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      }
+    },
+    "part1Score": 2.9,
+    "part2Score": 3.5,
+    "part3Score": 2.75,
+    "totalScore": 9.15,
+    "maxScore": 10,
+    "percentage": 91.5,
+    "rating": "Giỏi",
+    "feedback": "Bài làm rất tốt, các kiến thức cốt lõi về HĐH, phần mềm nguồn mở và lưu trữ trực tuyến đều vững vàng."
+  },
+  {
+    "id": "sub_demo_03",
+    "studentName": "Nguyễn Văn Nam",
+    "className": "11A2",
+    "mode": "test",
+    "scope": "all",
+    "startedAt": "2026-10-26T12:05:08.437Z",
+    "submittedAt": "2026-10-26T12:48:28.437Z",
+    "timeSpentSeconds": 2600,
+    "part1Answers": {
+      "1": "A",
+      "2": "D",
+      "3": "A",
+      "4": "A",
+      "5": "B",
+      "6": "C",
+      "7": "D",
+      "8": "A",
+      "9": "A",
+      "10": "C",
+      "11": "C",
+      "12": "A",
+      "13": "A",
+      "14": "A",
+      "15": "B",
+      "16": "A",
+      "17": "D",
+      "18": "C",
+      "19": "A",
+      "20": "D",
+      "21": "C",
+      "22": "A",
+      "23": "D",
+      "24": "D",
+      "25": "B",
+      "26": "B",
+      "27": "C",
+      "28": "D",
+      "29": "B",
+      "30": "C"
+    },
+    "part2Answers": {
+      "1": {
+        "a": true,
+        "b": true,
+        "c": false,
+        "d": true
+      },
+      "2": {
+        "a": false,
+        "b": false,
+        "c": true,
+        "d": true
+      },
+      "3": {
+        "a": true,
+        "b": false,
+        "c": false,
+        "d": true
+      },
+      "4": {
+        "a": true,
+        "b": false,
+        "c": true,
+        "d": true
+      },
+      "5": {
+        "a": true,
+        "b": false,
+        "c": true,
+        "d": false
+      },
+      "6": {
+        "a": true,
+        "b": false,
+        "c": true,
+        "d": true
+      }
+    },
+    "part3Answers": {
+      "1": {
+        "a": "10011",
+        "b": "14",
+        "c": "5",
+        "d": "14+5=19"
+      },
+      "2": {
+        "a": "chỉ đọc",
+        "b": "góp ý và sửa",
+        "c": "chung file",
+        "d": "comment riêng"
+      },
+      "3": {
+        "a": "rác nhựa",
+        "b": "nội trú",
+        "c": "bình nước cá nhân",
+        "d": "cơ quan môi trường"
+      },
+      "4": {
+        "a": "10000",
+        "b": "9",
+        "c": "7",
+        "d": "16"
+      },
+      "5": {
+        "a": "online",
+        "b": "khoá quyền",
+        "c": "xoá nhầm",
+        "d": "hết hạn"
+      },
+      "6": {
+        "a": "góc học tập",
+        "b": "sách vở",
+        "c": "ảnh",
+        "d": "trường"
+      }
+    },
+    "part3SelfScores": {
+      "1": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "2": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "3": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "4": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "5": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      },
+      "6": {
+        "a": 0.25,
+        "b": 0.25,
+        "c": 0.25,
+        "d": 0.25
+      }
+    },
+    "part1Score": 2.7,
+    "part2Score": 2.8,
+    "part3Score": 2.25,
+    "totalScore": 7.75,
+    "maxScore": 10,
+    "percentage": 77.5,
+    "rating": "Khá",
+    "feedback": "Đạt kết quả Khá. Cần xem lại kiến thức về cáp VGA/HDMI và các phần mềm mã nguồn mở."
+  }
+]

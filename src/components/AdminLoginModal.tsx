@@ -16,14 +16,14 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({ isOpen, onClos
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username.trim() || !password) {
       setErrorMsg('Vui lòng nhập đầy đủ Tên đăng nhập và Mật khẩu.');
       return;
     }
 
-    const success = loginAdmin(username, password);
+    const success = await loginAdmin(username, password);
     if (success) {
       setErrorMsg('');
       setUsername('');
