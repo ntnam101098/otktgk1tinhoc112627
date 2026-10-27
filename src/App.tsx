@@ -148,7 +148,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0d111c] text-slate-100 flex flex-col font-sans selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-800 flex flex-col font-sans selection:bg-[#80C8F8]/40 selection:text-[#003865]">
       {/* Top Navigation */}
       <Header
         isAdmin={isAdmin}
@@ -185,19 +185,19 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-[#0a0d16] py-6 px-4 text-center text-xs text-slate-400">
+      <footer className="border-t border-slate-200 bg-white py-6 px-4 text-center text-xs text-slate-500 shadow-xs">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div>
-            <p className="font-semibold text-slate-300">
+            <p className="font-bold text-slate-700">
               Hệ thống ôn luyện KTGK1 Môn Tin học 11 • Năm học 2026 - 2027
             </p>
-            <p className="text-[11px] text-slate-400 mt-0.5">
+            <p className="text-[11px] text-slate-500 mt-0.5 font-medium">
               Phạm vi kiến thức từ Bài 1 đến Bài 8 (Bộ sách Giáo dục phổ thông 2018)
             </p>
           </div>
 
           <div className="flex items-center gap-2 text-[11px]">
-            <span>Trạng thái: <strong className="text-emerald-400">Sẵn sàng ôn thi</strong></span>
+            <span>Trạng thái: <strong className="text-emerald-600 font-bold">Sẵn sàng ôn thi</strong></span>
           </div>
         </div>
       </footer>
