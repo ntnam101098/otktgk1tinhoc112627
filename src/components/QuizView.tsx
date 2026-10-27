@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Clock, CheckCircle2, AlertTriangle, Flag, ChevronLeft, ChevronRight, 
-  Send, ArrowLeft, User
+  Send, ArrowLeft, User, Shuffle
 } from 'lucide-react';
 import { PART1_QUESTIONS, PART2_QUESTIONS, PART3_QUESTIONS } from '../data/quizData';
 
@@ -19,6 +19,106 @@ interface QuizViewProps {
   onExit: () => void;
 }
 
+interface DisplayPart1Question {
+  id: number;
+  level: 'Biết' | 'Hiểu' | 'Vận dụng';
+  lesson: string;
+  question: string;
+  explanation: string;
+  correctAnswer: 'A' | 'B' | 'C' | 'D';
+  options: {
+    displayKey: 'A' | 'B' | 'C' | 'D';
+    originalKey: 'A' | 'B' | 'C' | 'D';
+    text: string;
+  }[];
+}
+
+interface DisplayPart2Item {
+  displayKey: 'a' | 'b' | 'c' | 'd';
+  originalKey: 'a' | 'b' | 'c' | 'd';
+  text: string;
+  isCorrect: boolean;
+  explanation: string;
+}
+
+interface DisplayPart2Question {
+  id: number;
+  title: string;
+  lesson: string;
+  context: string;
+  items: DisplayPart2Item[];
+}
+
+// Utility: Fisher-Yates shuffle
+function shuffleArray<T>(array: T[]): T[] {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+// Build standard default Part 1 data (unshuffled)
+function buildDefaultPart1(): DisplayPart1Question[] {
+  return PART1_QUESTIONS.map((q) => ({
+    ...q,
+    options: q.options.map((opt, idx) => ({
+      displayKey: (['A', 'B', 'C', 'D'] as const)[idx],
+      originalKey: opt.key,
+      text: opt.text,
+    })),
+  }));
+}
+
+// Build standard default Part 2 data (unshuffled)
+function buildDefaultPart2(): DisplayPart2Question[] {
+  return PART2_QUESTIONS.map((q) => ({
+    ...q,
+    items: q.items.map((item, idx) => ({
+      displayKey: (['a', 'b', 'c', 'd'] as const)[idx],
+      originalKey: item.key,
+      text: item.text,
+      isCorrect: item.isCorrect,
+      explanation: item.explanation,
+    })),
+  }));
+}
+
+// Shuffle Part 1: shuffle question order + shuffle option order within each question
+function shufflePart1Data(): DisplayPart1Question[] {
+  const shuffledQuestions = shuffleArray(PART1_QUESTIONS);
+  return shuffledQuestions.map((q) => {
+    const shuffledOpts = shuffleArray(q.options);
+    return {
+      ...q,
+      options: shuffledOpts.map((opt, idx) => ({
+        displayKey: (['A', 'B', 'C', 'D'] as const)[idx],
+        originalKey: opt.key,
+        text: opt.text,
+      })),
+    };
+  });
+}
+
+// Shuffle Part 2: shuffle 6 questions order + shuffle sub-items order within each question
+function shufflePart2Data(): DisplayPart2Question[] {
+  const shuffledQuestions = shuffleArray(PART2_QUESTIONS);
+  return shuffledQuestions.map((q) => {
+    const shuffledItems = shuffleArray(q.items);
+    return {
+      ...q,
+      items: shuffledItems.map((item, idx) => ({
+        displayKey: (['a', 'b', 'c', 'd'] as const)[idx],
+        originalKey: item.key,
+        text: item.text,
+        isCorrect: item.isCorrect,
+        explanation: item.explanation,
+      })),
+    };
+  });
+}
+
 export const QuizView: React.FC<QuizViewProps> = ({
   studentName,
   className,
@@ -31,6 +131,13 @@ export const QuizView: React.FC<QuizViewProps> = ({
   const [activeTab, setActiveTab] = useState<'part1' | 'part2' | 'part3'>(
     scope === 'part2' ? 'part2' : scope === 'part3' ? 'part3' : 'part1'
   );
+
+  // Question lists (default: standard curriculum order)
+  const [p1Questions, setP1Questions] = useState<DisplayPart1Question[]>(() => buildDefaultPart1());
+  const [isP1Shuffled, setIsP1Shuffled] = useState(false);
+
+  const [p2Questions, setP2Questions] = useState<DisplayPart2Question[]>(() => buildDefaultPart2());
+  const [isP2Shuffled, setIsP2Shuffled] = useState(false);
 
   // Answers state
   const [part1Answers, setPart1Answers] = useState<Record<number, 'A' | 'B' | 'C' | 'D'>>({});
@@ -85,6 +192,28 @@ export const QuizView: React.FC<QuizViewProps> = ({
       part3: part3Answers,
       timeSpentSeconds: elapsedSeconds,
     });
+  };
+
+  // Shuffle Part 1 handler
+  const handleShufflePart1 = () => {
+    setP1Questions(shufflePart1Data());
+    setIsP1Shuffled(true);
+  };
+
+  const handleResetPart1Order = () => {
+    setP1Questions(buildDefaultPart1());
+    setIsP1Shuffled(false);
+  };
+
+  // Shuffle Part 2 handler
+  const handleShufflePart2 = () => {
+    setP2Questions(shufflePart2Data());
+    setIsP2Shuffled(true);
+  };
+
+  const handleResetPart2Order = () => {
+    setP2Questions(buildDefaultPart2());
+    setIsP2Shuffled(false);
   };
 
   // Format time
@@ -296,19 +425,49 @@ export const QuizView: React.FC<QuizViewProps> = ({
         {/* SECTION I: MULTIPLE CHOICE */}
         {activeTab === 'part1' && showP1 && (
           <div className="space-y-6">
-            <div className="p-4 rounded-2xl bg-[#80C8F8]/20 border border-[#80C8F8]/60 text-xs sm:text-sm text-[#003865] flex items-center justify-between shadow-xs">
+            {/* Banner with 'Đảo câu hỏi' button */}
+            <div className="p-4 rounded-2xl bg-[#80C8F8]/20 border border-[#80C8F8]/60 text-xs sm:text-sm text-[#003865] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
               <div>
                 <span className="font-black text-[#005A9C]">PHẦN I: TRẮC NGHIỆM NHIỀU LỰA CHỌN</span> (Gồm 30 câu hỏi từ Bài 1 đến Bài 8).
                 <div className="text-slate-600 text-xs mt-0.5 font-medium">Mỗi câu hỏi có 4 phương án, thí sinh chỉ chọn 01 phương án đúng nhất.</div>
               </div>
-              <span className="text-[#005A9C] font-mono font-black bg-white px-3 py-1 rounded-lg border border-[#80C8F8]/40 shadow-xs">
-                Đã làm: {p1AnsweredCount}/30
-              </span>
+
+              {/* Action Toolbar on Banner */}
+              <div className="flex flex-wrap items-center gap-2 shrink-0 self-start sm:self-auto">
+                <button
+                  type="button"
+                  onClick={handleShufflePart1}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs border ${
+                    isP1Shuffled
+                      ? 'bg-[#FFD147] text-[#003865] border-[#FFD147] hover:bg-[#ffc82e]'
+                      : 'bg-white text-[#005A9C] border-[#005A9C]/30 hover:bg-[#80C8F8]/20'
+                  }`}
+                  title="Xáo trộn ngẫu nhiên thứ tự 30 câu hỏi và 4 phương án A-B-C-D"
+                >
+                  <Shuffle className="w-3.5 h-3.5" />
+                  <span>{isP1Shuffled ? 'Đã đảo (Bấm để đảo lại)' : 'Đảo câu hỏi'}</span>
+                </button>
+
+                {isP1Shuffled && (
+                  <button
+                    type="button"
+                    onClick={handleResetPart1Order}
+                    className="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-600 hover:text-slate-900 border border-slate-300 transition cursor-pointer"
+                    title="Khôi phục thứ tự chuẩn đề cương"
+                  >
+                    <span>Thứ tự gốc</span>
+                  </button>
+                )}
+
+                <span className="text-[#005A9C] font-mono font-black bg-white px-3 py-1 rounded-lg border border-[#80C8F8]/40 shadow-xs">
+                  Đã làm: {p1AnsweredCount}/30
+                </span>
+              </div>
             </div>
 
             <div className="space-y-4">
-              {PART1_QUESTIONS.map((q) => {
-                const isSelected = (optKey: string) => part1Answers[q.id] === optKey;
+              {p1Questions.map((q, idx) => {
+                const isSelected = (originalKey: string) => part1Answers[q.id] === originalKey;
                 const isFlag = Boolean(flagged[`p1_${q.id}`]);
 
                 return (
@@ -325,8 +484,13 @@ export const QuizView: React.FC<QuizViewProps> = ({
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="px-2.5 py-1 rounded-lg bg-[#005A9C]/10 text-[#005A9C] border border-[#005A9C]/20 text-xs font-black">
-                          Câu {q.id}
+                          Câu {idx + 1}
                         </span>
+                        {isP1Shuffled && (
+                          <span className="px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-500 font-semibold border border-slate-200">
+                            Gốc: Câu {q.id}
+                          </span>
+                        )}
                         <span className="px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-700 font-semibold border border-slate-200">
                           {q.level}
                         </span>
@@ -355,18 +519,18 @@ export const QuizView: React.FC<QuizViewProps> = ({
                       {q.question}
                     </div>
 
-                    {/* 4 Options */}
+                    {/* 4 Options with newly assigned display labels A-B-C-D */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       {q.options.map((opt) => {
-                        const selected = isSelected(opt.key);
+                        const selected = isSelected(opt.originalKey);
                         return (
                           <button
-                            key={opt.key}
+                            key={opt.displayKey}
                             type="button"
                             onClick={() => {
                               setPart1Answers((prev) => ({
                                 ...prev,
-                                [q.id]: opt.key,
+                                [q.id]: opt.originalKey,
                               }));
                             }}
                             className={`p-3.5 rounded-xl border text-left text-xs sm:text-sm font-medium transition flex items-start gap-3 cursor-pointer ${
@@ -382,7 +546,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                                   : 'bg-white text-slate-600 border border-slate-300'
                               }`}
                             >
-                              {opt.key}
+                              {opt.displayKey}
                             </span>
                             <span className="leading-snug">{opt.text}</span>
                           </button>
@@ -399,20 +563,50 @@ export const QuizView: React.FC<QuizViewProps> = ({
         {/* SECTION II: TRUE / FALSE */}
         {activeTab === 'part2' && showP2 && (
           <div className="space-y-6">
-            <div className="p-4 rounded-2xl bg-[#FFF275]/25 border border-[#FFD147]/60 text-xs sm:text-sm text-[#003865] flex items-center justify-between shadow-xs">
+            {/* Banner with 'Đảo câu hỏi' button */}
+            <div className="p-4 rounded-2xl bg-[#FFF275]/25 border border-[#FFD147]/60 text-xs sm:text-sm text-[#003865] flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
               <div>
                 <span className="font-black text-[#005A9C]">PHẦN II: TRẮC NGHIỆM ĐÚNG / SAI</span> (Gồm 6 bài tập tình huống).
                 <div className="text-slate-600 text-xs mt-0.5 font-medium">
                   Thí sinh chọn Đúng hoặc Sai cho từng ý a), b), c), d). (Đúng 1 ý = 0.1đ; 2 ý = 0.25đ; 3 ý = 0.5đ; 4 ý = 1.0đ)
                 </div>
               </div>
-              <span className="text-[#005A9C] font-mono font-black bg-white px-3 py-1 rounded-lg border border-[#FFD147]/40 shadow-xs">
-                Đã làm: {p2AnsweredCount}/6
-              </span>
+
+              {/* Action Toolbar on Banner */}
+              <div className="flex flex-wrap items-center gap-2 shrink-0 self-start sm:self-auto">
+                <button
+                  type="button"
+                  onClick={handleShufflePart2}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs border ${
+                    isP2Shuffled
+                      ? 'bg-[#FFD147] text-[#003865] border-[#FFD147] hover:bg-[#ffc82e]'
+                      : 'bg-white text-[#005A9C] border-[#005A9C]/30 hover:bg-[#FFF275]/50'
+                  }`}
+                  title="Xáo trộn ngẫu nhiên thứ tự 6 bài và các ý nhận định a-b-c-d"
+                >
+                  <Shuffle className="w-3.5 h-3.5" />
+                  <span>{isP2Shuffled ? 'Đã đảo (Bấm để đảo lại)' : 'Đảo câu hỏi'}</span>
+                </button>
+
+                {isP2Shuffled && (
+                  <button
+                    type="button"
+                    onClick={handleResetPart2Order}
+                    className="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-600 hover:text-slate-900 border border-slate-300 transition cursor-pointer"
+                    title="Khôi phục thứ tự chuẩn đề cương"
+                  >
+                    <span>Thứ tự gốc</span>
+                  </button>
+                )}
+
+                <span className="text-[#005A9C] font-mono font-black bg-white px-3 py-1 rounded-lg border border-[#FFD147]/40 shadow-xs">
+                  Đã làm: {p2AnsweredCount}/6
+                </span>
+              </div>
             </div>
 
             <div className="space-y-6">
-              {PART2_QUESTIONS.map((q) => {
+              {p2Questions.map((q, qIdx) => {
                 const currentAns = part2Answers[q.id] || { a: null, b: null, c: null, d: null };
                 const isFlag = Boolean(flagged[`p2_${q.id}`]);
 
@@ -427,8 +621,13 @@ export const QuizView: React.FC<QuizViewProps> = ({
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-2">
                         <span className="px-2.5 py-1 rounded-lg bg-[#005A9C]/10 text-[#005A9C] border border-[#005A9C]/20 text-xs font-black">
-                          {q.title}
+                          Câu {qIdx + 1}
                         </span>
+                        {isP2Shuffled && (
+                          <span className="px-2 py-0.5 rounded text-[11px] bg-slate-100 text-slate-500 font-semibold border border-slate-200">
+                            Gốc: {q.title}
+                          </span>
+                        )}
                         <span className="text-xs text-slate-500 font-medium hidden sm:inline">
                           • {q.lesson}
                         </span>
@@ -454,18 +653,18 @@ export const QuizView: React.FC<QuizViewProps> = ({
                       {q.context}
                     </div>
 
-                    {/* Sub-items a, b, c, d */}
+                    {/* Sub-items a, b, c, d with newly assigned display labels a-b-c-d */}
                     <div className="space-y-2.5">
                       {q.items.map((item) => {
-                        const val = currentAns[item.key];
+                        const val = currentAns[item.originalKey];
                         return (
                           <div
-                            key={item.key}
+                            key={item.displayKey}
                             className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                           >
                             <div className="text-xs sm:text-sm text-slate-800 font-medium flex items-start gap-2.5">
                               <span className="font-black text-[#005A9C] uppercase shrink-0 mt-0.5">
-                                {item.key})
+                                {item.displayKey})
                               </span>
                               <span>{item.text}</span>
                             </div>
@@ -478,7 +677,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                                     ...prev,
                                     [q.id]: {
                                       ...(prev[q.id] || { a: null, b: null, c: null, d: null }),
-                                      [item.key]: true,
+                                      [item.originalKey]: true,
                                     },
                                   }));
                                 }}
@@ -498,7 +697,7 @@ export const QuizView: React.FC<QuizViewProps> = ({
                                     ...prev,
                                     [q.id]: {
                                       ...(prev[q.id] || { a: null, b: null, c: null, d: null }),
-                                      [item.key]: false,
+                                      [item.originalKey]: false,
                                     },
                                   }));
                                 }}
