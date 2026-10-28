@@ -9,6 +9,17 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
+// Enable CORS for all incoming requests (crucial for iframe & external device access)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(express.json({ limit: '10mb' }));
 
 // Data storage directory and file path
@@ -219,6 +230,33 @@ app.post('/api/submissions', (req, res) => {
 
   console.log(`[SUBMISSION] Received and saved submission for: ${newSub.studentName} (${newSub.className})`);
   res.json({ success: true, data: newSub });
+});
+
+// BATCH SYNC: Synchronize multiple student submissions (merges local & server databases)
+app.post('/api/submissions/sync', (req, res) => {
+  const { submissions: clientSubs } = req.body || {};
+  if (!Array.isArray(clientSubs)) {
+    res.status(400).json({ success: false, message: 'Danh sách bài nộp không hợp lệ' });
+    return;
+  }
+  const currentSubs = readSubmissionsFromFile();
+  const subMap = new Map();
+  // Server items first
+  currentSubs.forEach((s: any) => { if (s && s.id) subMap.set(s.id, s); });
+  // Merge client items
+  clientSubs.forEach((s: any) => {
+    if (!s || !s.id) return;
+    const existing = subMap.get(s.id);
+    if (!existing || new Date(s.submittedAt).getTime() >= new Date(existing.submittedAt).getTime()) {
+      subMap.set(s.id, s);
+    }
+  });
+  const merged = Array.from(subMap.values()).sort(
+    (a: any, b: any) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime()
+  );
+  writeSubmissionsToFile(merged);
+  console.log(`[SYNC] Merged submissions database. Total records now: ${merged.length}`);
+  res.json({ success: true, count: merged.length, data: merged });
 });
 
 // DELETE single submission (Admin action)

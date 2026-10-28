@@ -1,11 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Header } from './components/Header';
 import { WelcomeHero } from './components/WelcomeHero';
 import { QuizView } from './components/QuizView';
 import { ResultView } from './components/ResultView';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { AdminDashboard } from './components/AdminDashboard';
-import { checkAdminAuth, logoutAdmin, getSubmissions, saveSubmission, fetchSubmissionsFromServer } from './utils/storage';
+import {
+  checkAdminAuth,
+  logoutAdmin,
+  getSubmissions,
+  saveSubmission,
+  fetchSubmissionsFromServer,
+} from './utils/storage';
 import { calculateScores, GradingResult } from './utils/grading';
 import { StudentSubmission } from './types/quiz';
 
@@ -29,26 +35,57 @@ export default function App() {
   const [currentSubmission, setCurrentSubmission] = useState<StudentSubmission | null>(null);
   const [currentGrading, setCurrentGrading] = useState<GradingResult | null>(null);
 
+  const handleRefreshSubmissions = useCallback(async () => {
+    try {
+      const updated = await fetchSubmissionsFromServer();
+      if (Array.isArray(updated)) {
+        setSubmissions(updated);
+      }
+    } catch (err) {
+      console.warn('Failed to refresh submissions:', err);
+    }
+  }, []);
+
   // Initialize
   useEffect(() => {
     setIsAdmin(checkAdminAuth());
     setSubmissions(getSubmissions());
+    handleRefreshSubmissions();
 
-    // Fetch persistent database from server
-    fetchSubmissionsFromServer().then((subs) => {
-      if (subs && subs.length > 0) {
-        setSubmissions(subs);
+    // Listen to real-time BroadcastChannel updates across tabs
+    let channel: BroadcastChannel | null = null;
+    try {
+      if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+        channel = new BroadcastChannel('tin11_submissions_sync');
+        channel.onmessage = () => {
+          handleRefreshSubmissions();
+        };
       }
-    });
-  }, []);
+    } catch {
+      // ignore
+    }
 
-  const handleRefreshSubmissions = async () => {
-    const updated = await fetchSubmissionsFromServer();
-    setSubmissions(updated);
-  };
+    // Also listen to storage events
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'tin11_exam_submissions_v1') {
+        handleRefreshSubmissions();
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+
+    return () => {
+      if (channel) channel.close();
+      window.removeEventListener('storage', handleStorage);
+    };
+  }, [handleRefreshSubmissions]);
 
   const handleAdminLoginSuccess = async () => {
     setIsAdmin(true);
+    setShowAdminDashboard(true);
+    await handleRefreshSubmissions();
+  };
+
+  const handleOpenAdminDashboard = async () => {
     setShowAdminDashboard(true);
     await handleRefreshSubmissions();
   };
@@ -153,7 +190,7 @@ export default function App() {
       <Header
         isAdmin={isAdmin}
         onOpenAdminLogin={() => setShowAdminLogin(true)}
-        onOpenAdminDashboard={() => setShowAdminDashboard(true)}
+        onOpenAdminDashboard={handleOpenAdminDashboard}
         onLogoutAdmin={handleLogout}
         onGoHome={handleGoHome}
         isHome={currentView === 'home'}
@@ -195,7 +232,6 @@ export default function App() {
               Phạm vi kiến thức từ Bài 1 đến Bài 8 (Bộ sách Giáo dục phổ thông 2018)
             </p>
           </div>
-
           <div className="flex items-center gap-2 text-[11px]">
             <span>Trạng thái: <strong className="text-emerald-600 font-bold">Sẵn sàng ôn thi</strong></span>
           </div>

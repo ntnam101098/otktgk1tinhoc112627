@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   FileSpreadsheet, Trash2, Download, Search, ShieldCheck, 
-  X, RefreshCw, Eye, Award, Users, AlertTriangle
+  X, RefreshCw, Eye, Award, Users, AlertTriangle, Upload, CheckCircle2
 } from 'lucide-react';
 import { StudentSubmission } from '../types/quiz';
 import { exportSubmissionsToExcel, exportSubmissionsToCSV } from '../utils/excelExport';
-import { deleteSubmission, clearAllSubmissions, restoreDemoSubmissions } from '../utils/storage';
+import { deleteSubmission, clearAllSubmissions, restoreDemoSubmissions, importSubmissions } from '../utils/storage';
 
 interface AdminDashboardProps {
   submissions: StudentSubmission[];
-  onRefresh: () => void;
+  onRefresh: () => void | Promise<void>;
   onClose: () => void;
   onLogout: () => void;
 }
@@ -26,6 +26,53 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [selectedSubmission, setSelectedSubmission] = useState<StudentSubmission | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [syncNotice, setSyncNotice] = useState<string>('');
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Auto-refresh periodically while dashboard is open so new submissions arrive automatically
+  useEffect(() => {
+    onRefresh();
+    const interval = setInterval(() => {
+      onRefresh();
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [onRefresh]);
+
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    await onRefresh();
+    setTimeout(() => {
+      setIsRefreshing(false);
+      setSyncNotice('Đã đồng bộ dữ liệu mới nhất!');
+      setTimeout(() => setSyncNotice(''), 3000);
+    }, 500);
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+      if (Array.isArray(parsed)) {
+        await importSubmissions(parsed);
+        await onRefresh();
+        setSyncNotice(`Đã nhập thành công ${parsed.length} bài làm!`);
+      } else if (parsed && parsed.id && parsed.studentName) {
+        await importSubmissions([parsed]);
+        await onRefresh();
+        setSyncNotice(`Đã nhập bài thi của ${parsed.studentName}!`);
+      } else {
+        alert('Tệp JSON không chứa dữ liệu bài làm hợp lệ.');
+      }
+    } catch {
+      alert('Không thể đọc tệp dữ liệu. Vui lòng kiểm tra định dạng .json');
+    }
+    if (fileInputRef.current) fileInputRef.current.value = '';
+    setTimeout(() => setSyncNotice(''), 4000);
+  };
 
   // Extract unique classes
   const classes = Array.from(new Set(submissions.map((s) => s.className))).filter(Boolean);
@@ -84,6 +131,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-xs overflow-y-auto">
       <div className="bg-white border border-slate-200 rounded-3xl max-w-6xl w-full max-h-[95vh] flex flex-col shadow-2xl overflow-hidden text-slate-800">
+        
         {/* Top Header in #005A9C */}
         <div className="p-5 sm:p-6 border-b border-[#00487d] bg-[#005A9C] text-white flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -96,20 +144,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <span className="px-2 py-0.5 rounded text-[11px] bg-[#FFF275] text-[#003865] font-mono font-black">
                   Admin: vvdtntbt
                 </span>
+                <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                  Đồng bộ tập trung
+                </span>
               </div>
               <p className="text-xs text-blue-100 font-medium">
-                Chỉ giáo viên/quản trị viên mới có quyền xem, xuất và xóa dữ liệu bài làm của học sinh
+                Dữ liệu bài nộp của học sinh từ tất cả thiết bị được thu thập và lưu trữ tập trung
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <button
-              onClick={onRefresh}
-              className="p-2 rounded-xl bg-white/15 hover:bg-white/25 text-white transition cursor-pointer"
-              title="Làm mới dữ liệu"
+              onClick={handleManualRefresh}
+              className={`p-2 rounded-xl bg-white/15 hover:bg-white/25 text-white transition cursor-pointer flex items-center gap-1.5 text-xs font-semibold ${
+                isRefreshing ? 'opacity-80' : ''
+              }`}
+              title="Làm mới dữ liệu từ máy chủ"
             >
-              <RefreshCw className="w-4 h-4" />
+              <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+              <span className="hidden md:inline">Làm mới</span>
             </button>
             <button
               onClick={onLogout}
@@ -126,8 +181,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
         </div>
 
+        {/* Sync notification toast */}
+        {syncNotice && (
+          <div className="bg-emerald-50 border-b border-emerald-200 px-6 py-2 text-xs font-bold text-emerald-800 flex items-center gap-2 animate-fade-in">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+            <span>{syncNotice}</span>
+          </div>
+        )}
+
         {/* Content Body */}
         <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 bg-[#f8fafc]">
+          
           {/* Stats Metrics */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
             <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs">
@@ -169,7 +233,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <span>Phổ điểm đánh giá theo chuẩn phân loại:</span>
               <span className="text-slate-500 font-normal">Tổng: {totalSubmissions} học sinh</span>
             </div>
-
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
               <div className="p-2.5 rounded-xl bg-[#FFF275]/35 border border-[#FFD147] text-center">
                 <div className="text-[#854d0e] font-black">Xuất sắc (9.0 - 10)</div>
@@ -253,6 +316,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <span>Xuất CSV</span>
               </button>
 
+              {/* Hidden file input for importing submissions */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".json"
+                className="hidden"
+                onChange={handleFileUpload}
+              />
+
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs flex items-center gap-1.5 transition cursor-pointer border border-slate-200"
+                title="Nhập thêm bài làm của học sinh từ tệp JSON"
+              >
+                <Upload className="w-4 h-4 text-slate-500" />
+                <span className="hidden sm:inline">Nhập</span> JSON
+              </button>
+
               <button
                 onClick={() => setShowClearConfirm(true)}
                 className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-semibold transition cursor-pointer"
@@ -308,31 +389,44 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                             {sub.className}
                           </span>
                         </td>
-                        <td className="py-3 px-3 text-xs text-slate-500 font-medium">
-                          {sub.mode === 'test' ? 'Thi thử 45p' : 'Ôn tập tự do'}
+                        <td className="py-3 px-3 text-slate-600">
+                          {sub.mode === 'test' ? 'Thi thử (45p)' : 'Ôn tập tự do'}
                         </td>
-                        <td className="py-3 px-3 text-xs text-slate-500">
-                          {new Date(sub.submittedAt).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}{' '}
-                          <span className="text-[11px] text-slate-400">
-                            {new Date(sub.submittedAt).toLocaleDateString('vi-VN')}
-                          </span>
+                        <td className="py-3 px-3 text-slate-500 text-xs font-mono">
+                          {new Date(sub.submittedAt).toLocaleString('vi-VN', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
                         </td>
-                        <td className="py-3 px-2 text-center font-mono font-bold text-[#005A9C]">
+                        <td className="py-3 px-2 text-center font-semibold text-slate-700">
                           {sub.part1Score.toFixed(1)}
                         </td>
-                        <td className="py-3 px-2 text-center font-mono font-bold text-[#005A9C]">
+                        <td className="py-3 px-2 text-center font-semibold text-slate-700">
                           {sub.part2Score.toFixed(1)}
                         </td>
-                        <td className="py-3 px-2 text-center font-mono font-bold text-[#005A9C]">
+                        <td className="py-3 px-2 text-center font-semibold text-slate-700">
                           {sub.part3Score.toFixed(1)}
                         </td>
                         <td className="py-3 px-3 text-center">
-                          <span className="text-sm font-black text-white bg-[#005A9C] px-2.5 py-1 rounded-lg shadow-xs">
+                          <span className="px-2.5 py-1 rounded-lg bg-[#FFD147]/30 border border-[#FFD147] text-[#003865] font-black text-sm">
                             {sub.totalScore.toFixed(2)}
                           </span>
                         </td>
                         <td className="py-3 px-3 text-center">
-                          <span className="px-2 py-0.5 rounded text-xs font-bold bg-[#FFF275]/50 text-[#854d0e] border border-[#FFD147]">
+                          <span
+                            className={`px-2 py-0.5 rounded-full text-xs font-bold ${
+                              sub.rating === 'Xuất sắc'
+                                ? 'bg-[#FFF275] text-[#854d0e] border border-[#FFD147]'
+                                : sub.rating === 'Giỏi'
+                                ? 'bg-emerald-100 text-emerald-800'
+                                : sub.rating === 'Khá'
+                                ? 'bg-[#80C8F8]/30 text-[#005A9C]'
+                                : 'bg-slate-200 text-slate-700'
+                            }`}
+                          >
                             {sub.rating}
                           </span>
                         </td>
@@ -340,17 +434,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           <div className="flex items-center justify-end gap-1.5">
                             <button
                               onClick={() => setSelectedSubmission(sub)}
-                              className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer"
+                              className="p-1.5 rounded-lg bg-slate-100 hover:bg-[#80C8F8]/30 text-[#005A9C] transition cursor-pointer"
                               title="Xem chi tiết bài làm"
                             >
-                              <Eye className="w-3.5 h-3.5" />
+                              <Eye className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => setConfirmDeleteId(sub.id)}
-                              className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 transition cursor-pointer"
-                              title="Xóa bài thi này"
+                              className="p-1.5 rounded-lg bg-slate-100 hover:bg-rose-100 text-rose-600 transition cursor-pointer"
+                              title="Xóa bài làm này"
                             >
-                              <Trash2 className="w-3.5 h-3.5" />
+                              <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
                         </td>
@@ -474,6 +568,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           </div>
         </div>
       )}
+
     </div>
   );
 };
