@@ -731,33 +731,33 @@ export const PART3_QUESTIONS: Part3Question[] = [
   },
   {
     id: 4,
-    title: 'Câu 4 (1,0 điểm – Vận dụng: Chuyển đổi & Phép cộng nhị phân)',
+    title: 'Câu 4 (1,0 điểm – Vận dụng: Phép toán nhị phân & Logic)',
     level: 'Vận dụng',
     lesson: 'Bài 4: Bên trong máy tính',
-    context: 'Cho hai số nhị phân 1001₂ và 0111₂. Em hãy thực hiện các yêu cầu sau:',
+    context: 'Cho hai số nhị phân 1001₂ và 111₂. Em hãy thực hiện các yêu cầu sau:',
     subItems: [
       {
         key: 'a',
         question: 'Cộng hai số trên và viết kết quả trong hệ nhị phân.',
-        suggestedAnswer: '1001₂ + 0111₂ = 10000₂',
+        suggestedAnswer: '1001₂ + 111₂ = 10000₂.',
         points: 0.25
       },
       {
         key: 'b',
         question: 'Chuyển số 1001₂ sang hệ thập phân.',
-        suggestedAnswer: '1001₂ = 9₁₀ (1×8 + 0×4 + 0×2 + 1×1 = 9)',
+        suggestedAnswer: '1001₂ = 9₁₀.',
         points: 0.25
       },
       {
         key: 'c',
-        question: 'Chuyển số 0111₂ sang hệ thập phân.',
-        suggestedAnswer: '0111₂ = 7₁₀ (0×8 + 1×4 + 1×2 + 1×1 = 7)',
+        question: 'x, y, z lần lượt có giá trị là 0, 1, 1 thì (x XOR y) AND z có giá trị bằng bao nhiêu?',
+        suggestedAnswer: '(0 XOR 1) AND 1 có kết quả là 1',
         points: 0.25
       },
       {
         key: 'd',
-        question: 'Dùng hai số thập phân vừa tìm được để viết phép cộng tương ứng và tính kết quả.',
-        suggestedAnswer: '9 + 7 = 16 (kiểm tra: 10000₂ = 1×16 + 0 = 16₁₀, hoàn toàn chính xác)',
+        question: 'Số thập phân 117 biểu diễn dưới dạng nhị phân là số nào?',
+        suggestedAnswer: '1110101',
         points: 0.25
       }
     ]

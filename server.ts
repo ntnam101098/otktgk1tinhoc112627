@@ -59,7 +59,7 @@ const INITIAL_DEMO_SUBMISSIONS = [
       1: { a: '10011', b: '14', c: '0', d: '1111100' },
       2: { a: 'Quyền xem chỉ để đọc', b: 'Nhận xét góp ý, sửa trực tiếp', c: 'Cùng làm việc trên đám mây', d: 'Nhận xét không tự sửa câu văn' },
       3: { a: 'học sinh giảm rác nhựa', b: 'giảm rác nhựa nội trú', c: 'bình nước cá nhân, mục Hình ảnh', d: 'Bài cơ quan môi trường vì tin cậy' },
-      4: { a: '10000', b: '9', c: '7', d: '9 + 7 = 16' },
+      4: { a: '10000', b: '9', c: '1', d: '1110101' },
       5: { a: 'Cùng đường dẫn trực tuyến', b: 'Chưa được phân quyền', c: 'Vô tình xóa nhầm dữ liệu', d: 'Quyền bị thu hồi' },
       6: { a: 'sắp xếp góc học tập nội trú', b: 'sắp xếp sách vở bàn học', c: 'bàn học gọn gàng, Hình ảnh', d: 'Bài nhà trường uy tín' }
     },
@@ -106,7 +106,7 @@ const INITIAL_DEMO_SUBMISSIONS = [
       1: { a: '10011', b: '14', c: '0', d: '1111100' },
       2: { a: 'Chỉ xem', b: 'Góp ý vs chỉnh sửa', c: 'Google docs đồng bộ', d: 'Chỉ là comment' },
       3: { a: 'giảm rác', b: 'giảm rác nội trú', c: 'bình nước', d: 'môi trường' },
-      4: { a: '10000', b: '9', c: '7', d: '9 + 7 = 16' },
+      4: { a: '10000', b: '9', c: '1', d: '1110101' },
       5: { a: 'link trực tuyến', b: 'chưa có quyền', c: 'sửa nhầm', d: 'bị hủy' },
       6: { a: 'góc học tập', b: 'sách vở', c: 'ảnh bàn học', d: 'trường học' }
     },
@@ -153,7 +153,7 @@ const INITIAL_DEMO_SUBMISSIONS = [
       1: { a: '10011', b: '14', c: '0', d: '1111100' },
       2: { a: 'chỉ đọc', b: 'góp ý và sửa', c: 'chung file', d: 'comment riêng' },
       3: { a: 'rác nhựa', b: 'nội trú', c: 'bình nước cá nhân', d: 'cơ quan môi trường' },
-      4: { a: '10000', b: '9', c: '7', d: '16' },
+      4: { a: '10000', b: '9', c: '1', d: '1110101' },
       5: { a: 'online', b: 'khoá quyền', c: 'xoá nhầm', d: 'hết hạn' },
       6: { a: 'góc học tập', b: 'sách vở', c: 'ảnh', d: 'trường' }
     },
