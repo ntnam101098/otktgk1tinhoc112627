@@ -632,33 +632,33 @@ export const PART2_QUESTIONS: Part2Question[] = [
 export const PART3_QUESTIONS: Part3Question[] = [
   {
     id: 1,
-    title: 'Câu 1 (1,0 điểm – Vận dụng: Phép toán nhị phân)',
+    title: 'Câu 1 (1,0 điểm – Vận dụng: Phép toán nhị phân & Logic)',
     level: 'Vận dụng',
     lesson: 'Bài 4: Bên trong máy tính',
-    context: 'Cho hai số nhị phân 1110₂ và 0101₂. Em hãy thực hiện các yêu cầu sau:',
+    context: 'Cho hai số nhị phân 1110₂ và 101₂. Em hãy thực hiện các yêu cầu sau:',
     subItems: [
       {
         key: 'a',
         question: 'Tính tổng của hai số và viết kết quả trong hệ nhị phân.',
-        suggestedAnswer: '1110₂ + 0101₂ = 10011₂',
+        suggestedAnswer: '1110₂ + 101₂ = 10011₂.',
         points: 0.25
       },
       {
         key: 'b',
         question: 'Số nhị phân 1110₂ có giá trị bao nhiêu trong hệ thập phân?',
-        suggestedAnswer: '1110₂ = 14₁₀ (1×2³ + 1×2² + 1×2¹ + 0×2⁰ = 8 + 4 + 2 + 0 = 14)',
+        suggestedAnswer: '1110₂ = 14₁₀.',
         points: 0.25
       },
       {
         key: 'c',
-        question: 'Số nhị phân 0101₂ có giá trị bao nhiêu trong hệ thập phân?',
-        suggestedAnswer: '0101₂ = 5₁₀ (0×2³ + 1×2² + 0×2¹ + 1×2⁰ = 4 + 1 = 5)',
+        question: 'x, y, z lần lượt có giá trị là 1, 1, 0 thì (x XOR y) OR z có giá trị bằng bao nhiêu?',
+        suggestedAnswer: '(1 XOR 1) OR 0 có kết quả là 0',
         points: 0.25
       },
       {
         key: 'd',
-        question: 'Viết và tính phép cộng trong hệ thập phân tương ứng với phép cộng trên.',
-        suggestedAnswer: '14 + 5 = 19 (kiểm tra: 10011₂ = 16 + 2 + 1 = 19₁₀, hoàn toàn chính xác)',
+        question: 'Số thập phân 124 biểu diễn dưới dạng nhị phân là số nào?',
+        suggestedAnswer: '1111100',
         points: 0.25
       }
     ]

@@ -33,7 +33,7 @@ export const DEFAULT_DEMO_SUBMISSIONS: StudentSubmission[] = [
       6: { a: true, b: false, c: true, d: true },
     },
     part3Answers: {
-      1: { a: '10011', b: '14', c: '5', d: '14 + 5 = 19' },
+      1: { a: '10011', b: '14', c: '0', d: '1111100' },
       2: { a: 'Quyền xem chỉ để đọc', b: 'Nhận xét góp ý, sửa trực tiếp', c: 'Cùng làm việc trên đám mây', d: 'Nhận xét không tự sửa câu văn' },
       3: { a: 'học sinh giảm rác nhựa', b: 'giảm rác nhựa nội trú', c: 'bình nước cá nhân, mục Hình ảnh', d: 'Bài cơ quan môi trường vì tin cậy' },
       4: { a: '10000', b: '9', c: '7', d: '9 + 7 = 16' },
@@ -80,7 +80,7 @@ export const DEFAULT_DEMO_SUBMISSIONS: StudentSubmission[] = [
       6: { a: true, b: false, c: true, d: true },
     },
     part3Answers: {
-      1: { a: '10011', b: '14', c: '5', d: '14 + 5 = 19' },
+      1: { a: '10011', b: '14', c: '0', d: '1111100' },
       2: { a: 'Chỉ xem', b: 'Góp ý vs chỉnh sửa', c: 'Google docs đồng bộ', d: 'Chỉ là comment' },
       3: { a: 'giảm rác', b: 'giảm rác nội trú', c: 'bình nước', d: 'môi trường' },
       4: { a: '10000', b: '9', c: '7', d: '9 + 7 = 16' },
@@ -127,7 +127,7 @@ export const DEFAULT_DEMO_SUBMISSIONS: StudentSubmission[] = [
       6: { a: true, b: false, c: true, d: true },
     },
     part3Answers: {
-      1: { a: '10011', b: '14', c: '5', d: '14+5=19' },
+      1: { a: '10011', b: '14', c: '0', d: '1111100' },
       2: { a: 'chỉ đọc', b: 'góp ý và sửa', c: 'chung file', d: 'comment riêng' },
       3: { a: 'rác nhựa', b: 'nội trú', c: 'bình nước cá nhân', d: 'cơ quan môi trường' },
       4: { a: '10000', b: '9', c: '7', d: '16' },
